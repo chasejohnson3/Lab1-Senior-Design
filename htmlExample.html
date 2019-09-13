@@ -1,0 +1,55 @@
+<html>
+<head>
+<script language="JavaScript">
+<!-- hide this script from old browsers
+function temp(form)
+{
+  var f = parseFloat(form.DegF.value, 10);
+  var c = 0;
+  c = (f - 32.0) * 5.0 / 9.0;
+  form.DegC.value = c;
+}
+// done hiding from old browsers -->
+// Credit: https://computer.howstuffworks.com/javascript.htm
+</script>
+</head>
+<body>
+<FORM>
+<h1>Real-Time Temperature Sensor Web Interface </h1>
+<h2>Example Fahrenheit to Celsius Converter</h2>
+Enter a temperature in degrees F: 
+<INPUT NAME="DegF" VALUE="0" MAXLENGTH="15" SIZE=15>
+<p>
+Click this button to calculate the temperature 
+in degrees C:
+<INPUT NAME="calc" VALUE="Calculate" TYPE=BUTTON 
+onClick=temp(this.form)>
+<p>
+Temperature in degrees C is: 
+<INPUT NAME="DegC" READONLY SIZE=15>
+<p>
+Enter a max temp threshold in degrees C:
+<INPUT NAME ="maxThreshold" VALUE="0">
+<p>
+Enter max temp warning text message :
+<INPUT NAME ="maxMessage" VALUE="Max Temp Warning: ">
+<p>
+Enter a min temp threshold in degrees C:
+<INPUT NAME ="minThreshold" VALUE="0">
+<p>
+Enter min temp warning text message :
+<INPUT NAME ="minMessage" VALUE="Min Temp Warning:">
+<p>
+Enter a text-alert phone number (ex. 3196657091):
+<INPUT NAME ="phoneNumber" VALUE="0">
+<p> 
+</FORM>
+<INPUT NAME="degSwap" VALUE="degC <-> degF" TYPE=BUTTON 
+onClick=temp(this.form)>
+<p>
+<INPUT NAME="displayPower" VALUE="Dispaly OFF/ON" TYPE=BUTTON 
+onClick=temp(this.form)>
+<p>
+
+</body>
+</html>
