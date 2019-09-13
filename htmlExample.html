@@ -2,13 +2,19 @@
 <head>
 <script language="JavaScript">
 <!-- hide this script from old browsers
-function temp(form)
+function tempSwap(form)
 {
   var f = parseFloat(form.DegF.value, 10);
   var c = 0;
   c = (f - 32.0) * 5.0 / 9.0;
   form.DegC.value = c;
 }
+
+function toggleDisplay(form)
+{
+ // Insert logic to toggle thermostat dislay here
+}
+
 // done hiding from old browsers -->
 // Credit: https://computer.howstuffworks.com/javascript.htm
 //Information for setting up Ploty: https://plot.ly/javascript/getting-started/
@@ -29,29 +35,34 @@ Enter a temperature in degrees F:
 Click this button to calculate the temperature 
 in degrees C:
 <INPUT NAME="calc" VALUE="Calculate" TYPE=BUTTON 
-onClick=temp(this.form)>
+onClick=tempSwap(this.form)>
 <p>
 Temperature in degrees C is: 
 <INPUT NAME="DegC" READONLY SIZE=15>
 <p>
 
-<h2>Insert Graph Title Here</h2>
 <div id="tester" style="width:800px;height:350px;"></div>
 
 <script>
 // Set limits on axes
 var layout = {
-  xaxis: {range: [0, 300]},
-  yaxis: {range: [10, 50]}
+  xaxis: {
+	title: { text: 'Seconds Ago from Current Time (s)'},
+	range: [0, 300] }, 
+  yaxis:{
+	title: {text: "Temperature (degC)"},
+	range: [10, 50] }, 
+  title: { text: 'Temperature vs Time'}
   };
 
 	TESTER = document.getElementById('tester');
 	Plotly.plot( TESTER, [{
-	x: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 200, 300],
-	y: [10, 15, 20, 25, 30, 40, 45, 50, 45, 35, 20, 15, 10, 0] }], {
-	margin: { t: 0 }, layout } );
+		x: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 200, 300], // Just an example of fixed data plotting
+		y: [10, 15, 20, 25, 30, 40, 45, 50, 45, 35, 20, 15, 10, ] }], 
+		layout);
 </script>
-
+<p>
+<h2>User Input Form</h2>
 Enter a max temp threshold in degrees C:
 <INPUT NAME ="maxThreshold" VALUE="0">
 <p>
@@ -67,15 +78,17 @@ Enter min temp warning text message :
 Enter a text-alert phone number (ex. 3196657091):
 <INPUT NAME ="phoneNumber" VALUE="0">
 <p> 
-</FORM>
+Toggle instantaneous temp reading:
 <INPUT NAME="degSwap" VALUE="degC <-> degF" TYPE=BUTTON 
-onClick=temp(this.form)>
+onClick=tempSwap(this.form)>
 <p>
+Toggle thermostat display
 <INPUT NAME="displayPower" VALUE="Dispaly OFF/ON" TYPE=BUTTON 
-onClick=temp(this.form)>
+onClick=toggleDisplay(this.form)>
 <p>
 
-<h2>Insert Graph Title Here</h2>
+</FORM>
+
 <div id="tester2" style="width:600px;height:250px;"></div>
 <script>
 var trace1 = {
