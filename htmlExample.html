@@ -108,5 +108,47 @@ var data = [trace1, trace2];
 Plotly.newPlot(tester2, data, {}, {showSendToCloud: true});
 </script>
 
+<script 
+src="https://smtpjs.com/v3/smtp.js">
+
+Email.send({
+    Host : "smtp.gmail.com",
+    Username : "BuckyStuck11@gmail.com",
+    Password : "BuckyStuck440",
+    To : 'wake6594@gmail.com',
+    From : "BuckyStuck11@gmail.com",
+    Subject : "This is the subject",
+    Body : "And this is the body"
+}).then(
+  message => alert(message)
+);
+</script>
+
+<script src = "sendEmail.js"></script>
+
+<script src = "bundle.js">
+
+</script>
+
+
+
+
+
+
+
+
+<?php
+
+$con = mysql_connect('34.69.183.235', 'root', '');
+$db = mysql_select_db('Lab1');
+if($con){
+	echo 'Successfully connected to Lab1 Database'
+}
+else{
+	die ('Connection ERROR');
+}
+?>
+
+
 </body>
 </html>
