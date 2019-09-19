@@ -1,12 +1,20 @@
 
 var mysql = require('mysql');
-var express = require('express')
+var express = require('express');
 var app = express();
+const url = require('url');
+var fs = require("fs");
+
+var db_password = JSON.parse(fs.readFileSync("passwords.json")).password;
+
+
+
+
 
 var con = mysql.createConnection({
     host: "34.68.18.19",
     user: "root",
-    password: "dreamteam1"
+    password: db_password
 });
 
 sql = "select * from Lab1.TempData";
@@ -28,7 +36,17 @@ app.get('/', function(req, resp){
             tempArr[i] = result[i].Temp;
             timeArr[i] = result[i].Time;
         }
-        resp.json(tempArr)
+        // resp.json(tempArr)
+        // resp.redirect("https://chasejohnson3.github.io/Lab1-Senior-Design/")
+        resp.redirect(url.format({
+            pathname:"https://chasejohnson3.github.io/Lab1-Senior-Design/",
+            query: {
+               "tempArray":tempArr,
+               "timeArr": timeArr
+            }
+        }));
+    
+        // resp.sendFile("C:\\Users\\User\\OneDrive - University of Iowa\\2019 Fall Semester\\Senior Design\\Lab1-Senior-Design\\htmlExample.html")
         console.log(tempArr);
         console.log(timeArr);
     });
