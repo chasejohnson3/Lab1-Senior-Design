@@ -61,7 +61,9 @@
     var tempArr = url.searchParams.get("tempArr");
     var timeArr = url.searchParams.get("timeArr");
 
-    document.getElementById("test").innerHTML = tempArr
+    console.log("Temp arr is " + tempArr);
+    console.log("Time arr is " + timeArr);
+    // document.getElementById("test").innerHTML = tempArr
   
     TESTER = document.getElementById('tester');
     Plotly.plot( TESTER, [{
