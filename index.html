@@ -67,8 +67,8 @@
   
     TESTER = document.getElementById('tester');
     Plotly.plot( TESTER, [{
-      x: timeArr, // Just an example of fixed data plotting
-      y: tempArr }], 
+      x: JSON.parse(timeArr), // Just an example of fixed data plotting
+      y: JSON.parse(tempArr) }], 
       layout);
   </script>
 

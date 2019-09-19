@@ -41,8 +41,8 @@ app.get('/', function(req, resp){
         resp.redirect(url.format({
             pathname:"https://chasejohnson3.github.io/Lab1-Senior-Design/",
             query: {
-               "tempArray":tempArr,
-               "timeArr": timeArr
+               "tempArray":JSON.stringify(tempArr),
+               "timeArr": JSON.stringify(timeArr)
             }
         }));
     
