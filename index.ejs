@@ -1,0 +1,148 @@
+<html>
+  <head>
+  <script language="JavaScript">
+  // <!-- hide this script from old browsers
+  function tempSwap(form)
+  {
+    var f = parseFloat(form.DegF.value, 10);
+    var c = 0;
+    c = (f - 32.0) * 5.0 / 9.0;
+    form.DegC.value = c;
+  }
+  
+  function toggleDisplay(form)
+  {
+   // Insert logic to toggle thermostat dislay here
+  }
+  
+  // done hiding from old browsers -->
+  // Credit: https://computer.howstuffworks.com/javascript.htm
+  //Information for setting up Ploty: https://plot.ly/javascript/getting-started/
+  //Look at https://www.youtube.com/watch?v=2-tnkzG0sKU for information on plotting using Plotly
+  </script>
+  
+  <!--Include the plotly library -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  
+  </head>
+  <body>
+  <FORM>
+  <h1>Real-Time Temperature Sensor Web Interface </h1>
+  <h2>Example Fahrenheit to Celsius Converter</h2>
+  Enter a temperature in degrees F: 
+  <INPUT NAME="DegF" VALUE="0" MAXLENGTH="15" SIZE=15>
+  <p>
+  Click this button to calculate the temperature 
+  in degrees C:
+  <INPUT NAME="calc" VALUE="Calculate" TYPE=BUTTON 
+  onClick=tempSwap(this.form)>
+  <p>
+  Temperature in degrees C is: 
+  <INPUT NAME="DegC" READONLY SIZE=15>
+  <p>
+  
+  <h1 class="tempArr" style="visibility: hidden;height:0px"><%= tempArr%></h1>
+  <h2 class="timeArr" style="visibility: hidden;height:0px"><%= timeArr%></h2>
+
+  <div id="tester" style="width:800px;height:350px;"></div>
+  <!-- <h1 id="test">aldsfk</h1> -->
+  <script>
+  // Set limits on axes
+  var layout = {
+    xaxis: {
+    title: { text: 'Seconds Ago from Current Time (s)'},
+    range: [0, 300] }, 
+    yaxis:{
+    title: {text: "Temperature (degC)"},
+    range: [10, 50] }, 
+    title: { text: 'Temperature vs Time'}
+    };
+  
+
+    
+    var url = new URL(window.location.href);
+    // var tempArr = url.searchParams.get("tempArr");
+    // var timeArr = url.searchParams.get("timeArr");
+    // var tempArr = <%- tempArr %>;
+    // var timeArr = <%- timeArr %>;
+
+    var tempArrStr = document.querySelector(".tempArr").textContent;
+    var timeArrStr = document.querySelector(".timeArr").textContent;
+
+    
+    console.log("Temp arr str is " + tempArrStr);
+    console.log("Time arr str is " + timeArrStr);
+
+    var tempArr = tempArrStr.split(',').map(function(item){
+      return parseInt(item, 10);
+    });
+    var timeArr = timeArrStr.split(',').map(function(item){
+      return parseInt(item, 10);
+    })
+    
+    console.log("Temp arr is " + tempArr);
+    console.log("Time arr is " + timeArr);
+
+    // document.getElementById("test").innerHTML = tempArr
+  
+    TESTER = document.getElementById('tester');
+    Plotly.plot( TESTER, [{
+      // x: JSON.parse(timeArr), // Just an example of fixed data plotting
+      // y: JSON.parse(tempArr)}], 
+      x: timeArr,
+      y: tempArr}],
+      layout);
+  </script>
+
+
+  <p>
+
+  
+  <h2>User Input Form</h2>
+  Enter a max temp threshold in degrees C:
+  <INPUT NAME ="maxThreshold" VALUE="0">
+  <p>
+  Enter max temp warning text message :
+  <INPUT NAME ="maxMessage" VALUE="Max Temp Warning: ">
+  <p>
+  Enter a min temp threshold in degrees C:
+  <INPUT NAME ="minThreshold" VALUE="0">
+  <p>
+  Enter min temp warning text message :
+  <INPUT NAME ="minMessage" VALUE="Min Temp Warning:">
+  <p>
+  Enter a text-alert phone number (ex. 3196657091):
+  <INPUT NAME ="phoneNumber" VALUE="0">
+  <p> 
+  Toggle instantaneous temp reading:
+  <INPUT NAME="degSwap" VALUE="degC <-> degF" TYPE=BUTTON 
+  onClick=tempSwap(this.form)>
+  <p>
+  Toggle thermostat display
+  <INPUT NAME="displayPower" VALUE="Dispaly OFF/ON" TYPE=BUTTON 
+  onClick=toggleDisplay(this.form)>
+  <p>
+  
+  </FORM>
+  
+  <div id="tester2" style="width:600px;height:250px;"></div>
+  <script>
+  var trace1 = {
+    x: [1, 2, 3, 4],
+    y: [10, 15, 13, 17],
+    type: 'scatter',
+  };
+  
+  var trace2 = {
+    x: [1, 2, 3, 4],
+    y: [16, 5, 11, 9],
+    type: 'scatter'
+  };
+  
+  var data = [trace1, trace2];
+  
+  Plotly.newPlot(tester2, data, {}, {showSendToCloud: true});
+  </script>
+  
+  </body>
+  </html>
