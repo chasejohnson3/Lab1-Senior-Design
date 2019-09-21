@@ -11,7 +11,7 @@ $message = $_REQUEST["message"];
 $mail = new PHPMailer(true);
 
 
-$mail->SMTPDebug = 1;  
+$mail->SMTPDebug = 2;  
 $mail->isSMTP();                                        
 $mail->Host       = 'smtp.gmail.com'; 
 $mail->SMTPAuth   = true;                                  
