@@ -1,20 +1,15 @@
-
+const express = require('express')
+const path = require('path')
 var mysql = require('mysql');
-var express = require('express');
 var app = express();
 const url = require('url');
-var fs = require("fs");
 
-var db_password = JSON.parse(fs.readFileSync("passwords.json")).password;
-
-
-
-
+const PORT = process.env.PORT || 5000
 
 var con = mysql.createConnection({
     host: "34.68.18.19",
     user: "root",
-    password: db_password
+    password: "dreamteam1"
 });
 
 sql = "select * from Lab1.TempData";
@@ -36,20 +31,46 @@ app.get('/', function(req, resp){
             tempArr[i] = result[i].Temp;
             timeArr[i] = result[i].Time;
         }
-        // resp.json(tempArr)
-        // resp.redirect("https://chasejohnson3.github.io/Lab1-Senior-Design/")
-        resp.redirect(url.format({
-            pathname:"https://chasejohnson3.github.io/Lab1-Senior-Design/",
-            query: {
-               "tempArr":JSON.stringify(tempArr),
-               "timeArr": JSON.stringify(timeArr)
-            }
-        }));
-    
-        // resp.sendFile("C:\\Users\\User\\OneDrive - University of Iowa\\2019 Fall Semester\\Senior Design\\Lab1-Senior-Design\\htmlExample.html")
-        console.log(tempArr);
-        console.log(timeArr);
+        resp.render(__dirname + "/index.ejs", {
+            tempArr: tempArr,
+            timeArr: timeArr
+        });
     });
-});
+})
 
-app.listen(1337);
+app.get('/sendText', function(req, resp){
+    console.log("test in index.js");
+    var nodemailer = require('nodemailer');
+    var phone_num = req.query.phoneNum;
+    var carrier_ext = req.query.carrierExt;
+    console.log("Full Path: " + req.url);
+    console.log("Phone number is " + phone_num);
+    
+    
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'BuckyStuck11@gmail.com',
+        pass: 'BuckyStuck440'
+      }
+    });
+    
+    var mailOptions = {
+      from: 'BuckyStuck11@gmail.com',
+    //   to: phone_num + @email.uscc.net
+    //   to: phone_num + "@messaging.sprintpcs.com",
+      to: phone_num + carrier_ext,
+      subject: 'Sending Email using Node.js',
+      text: 'That was easy!'
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent to ' + mailOptions.to + ': '+ info.response);
+      }
+    });
+    resp.redirect("/");  
+})
+app.listen(PORT);
