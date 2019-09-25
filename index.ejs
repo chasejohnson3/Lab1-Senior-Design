@@ -10,11 +10,6 @@
     form.DegC.value = c;
   }
   
-  var degCorDegF = 0;	// 0 = degC, 1 = degF
-  function tempUnitSwap(){
-  	  degCorDegF = !degCorDegF;
-  }
-  
   function toggleDisplay(form)
   {
    // Insert logic to toggle thermostat dislay here
@@ -106,7 +101,33 @@
       x: timeArr,
       y: tempArr}],
       layout);
-  </script>
+	  
+	//Gloabal Variable in this script used to track degree units. 0 = degC, 1 = degF  
+	var degCorDegF = 0;
+	function tempUnitSwap(){
+  	  degCorDegF = !degCorDegF;
+	}
+	
+	//This function pulls the most recent temperature and prints it in the user's preferred units	
+	function printCurrentTemp(){
+	  //The user wants instantaneous temp in Celsius
+	  if(degCorDegF == 0){
+		document.write(tempArr[tempArr.length-1] + " degC");
+	  }
+	  //The user wants instantaneous temp in Fahrenheit 
+	  else{
+	  //Convert the current Temp to degF
+		var currTempC = tempArr[tempArr.length-1];
+		var currTempF = (currTempC*(9/5) + 32);
+	  
+		document.write(" " + currTempF + " degF");
+	  } 
+	}
+	
+	//Call the instantaneous temp print function
+	printCurrentTemp();
+	  
+</script>
 
   <script>
     function httpGetAsync(theUrl, callback)
@@ -136,39 +157,10 @@
     }
 </script>
   
-  <p> 
-  
-  <p id="demo"></p>
-
-  <p>
-  Instantaneous Temperature in Farenheit: 
-  <INPUT NAME="currTempFTest" READONLY SIZE=15>
-  <p>
-  
+<p> 
+<p id="demo"></p>
 <p>
-  Instantaneous Temperature: 
-  <script>
-  //I have to figure out how to make this a function that gets ran every second. the problem is I cant successfully access the tempArr inside of a function for some reason.
-  //I then need to make the boolean indicator on degC or degF actually work. The structure is in place at lest
-	  
-	  //The user wants instantaneous temp in Celsius
-	  if(degCorDegF == 0){
-		document.write(tempArr[tempArr.length-1] + " degC");
-	  }
-	  //The user wants instantaneous temp in Fahrenheit 
-	  else{
-	  //Convert the current Temp to degF
-		var currTempC = tempArr[tempArr.length-1];
-		var currTempF = (currTempC*(9/5) + 32);
-	  
-		document.write(" " + currTempF + " degF");
-	  //}
-	  
 
-</script>
- <p>
-
-  
   <h2>User Input Form</h2>
   Enter a max temp threshold in degrees C:
   <INPUT NAME ="maxThreshold" VALUE="0">
