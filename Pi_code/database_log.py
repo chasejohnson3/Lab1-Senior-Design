@@ -44,6 +44,7 @@ r=0
 while True:
 
         r += 1
+	disPwr = False
         f=open(DS18B20, "r")
         data=f.read()
         f.close()
@@ -57,7 +58,8 @@ while True:
         tf = tc*9.0/5.0 + 32.0
         
         #Put any SQL command here - In our case, put sensor data in database
-        cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s+35 , %s, %s)",(r, tc, r))
+        cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
+        #cur.execute("INSERT INTO DisplayStatus (Time, dispPwrOnOff) VALUES(%s, %s)", (r,0))
         db.commit()
 	
 	lcd.clear()
