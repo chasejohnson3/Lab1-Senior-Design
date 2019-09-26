@@ -10,11 +10,6 @@
     form.DegC.value = c;
   }
   
-  function toggleDisplay(form)
-  {
-   // Insert logic to toggle thermostat dislay here
-  }
-  
   function refresh()
   {
     window.location.href = "./";
@@ -52,6 +47,7 @@
   
   <h1 class="tempArr" style="visibility: hidden;height:0px"><%= tempArr%></h1>
   <h2 class="timeArr" style="visibility: hidden;height:0px"><%= timeArr%></h2>
+  <!-- <h3 class="disPwr" style ="visibility: hidden;height:0px">intentionallyRemoved</h3> -->
 
   <div id="tester" style="width:800px;height:350px;"></div>
   <!-- <h1 id="test">aldsfk</h1> -->
@@ -68,7 +64,10 @@
     };
   
 
-    
+    var xhr = new XMLHttpRequest();
+	xhr.open("GET", '/onoff', false);
+	xhr.send(null);
+	console.log(xhr.responseText);
     var url = new URL(window.location.href);
     // var tempArr = url.searchParams.get("tempArr");
     // var timeArr = url.searchParams.get("timeArr");
@@ -77,20 +76,24 @@
 
     var tempArrStr = document.querySelector(".tempArr").textContent;
     var timeArrStr = document.querySelector(".timeArr").textContent;
+	//var disPwrStr = document.querySelector(".disPwr").textContent; 
 
     
     console.log("Temp arr str is " + tempArrStr);
     console.log("Time arr str is " + timeArrStr);
-
+	//console.log("Display Status is " + disPwrStr);
+	
     var tempArr = tempArrStr.split(',').map(function(item){
       return parseInt(item, 10);
     });
     var timeArr = timeArrStr.split(',').map(function(item){
       return parseInt(item, 10);
-    })
+    });
+	
     
     console.log("Temp arr is " + tempArr);
     console.log("Time arr is " + timeArr);
+	//console.log("disPwr arr is " + disPwrArr);
 
     // document.getElementById("test").innerHTML = tempArr
   
@@ -126,6 +129,14 @@
 	
 	//Call the instantaneous temp print function
 	printCurrentTemp();
+	
+	
+	
+	
+	function toggleDisplay(form)
+	{
+		// Insert logic to write 0 or 1 to the DisplayStatus table in our database
+	}
 	  
 </script>
 

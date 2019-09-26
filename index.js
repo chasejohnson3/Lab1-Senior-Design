@@ -13,6 +13,7 @@ var con = mysql.createConnection({
 });
 
 sql = "select * from Lab1.TempData";
+displayStatusTablePath = "select * from Lab1.DisplayStatus";
 
 tempArr = [];
 timeArr = [];
@@ -33,10 +34,24 @@ app.get('/', function(req, resp){
         }
         resp.render(__dirname + "/index.ejs", {
             tempArr: tempArr,
+			disPwr: 1,
             timeArr: timeArr
         });
     });
+	
 })
+
+/* app.get('/onoff', function(req, resp){
+    con.query(displayStatusTablePath, function(err, result, fields){
+        if (err) throw err;
+       var localDisPwr = results[0].dispPwrOnOff;
+		
+        resp.render(__dirname + "/index.ejs", {	
+			disPwr: localDisPwr
+        });
+    });
+}) */
+
 
 app.get('/sendText', function(req, resp){
     console.log("test in index.js");
@@ -73,4 +88,5 @@ app.get('/sendText', function(req, resp){
     });
     resp.redirect("/");  
 })
+
 app.listen(PORT);
