@@ -59,7 +59,7 @@ app.get('/sendTemps', function(req, resp){
     {
 		// Missing values in SQL are interpreted as NULL so the below if will translate null values between javascript and SQL
 		if(result[i].Temp){
-			tempArr[i] = result[i];
+			tempArr[i] = result[i].Temp;
 		}else{
 			tempArr[i] = null;
 		}
