@@ -27,6 +27,9 @@
   
   <!--Include the plotly library -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			  crossorigin="anonymous"></script>
   
   </head>
   <body>
@@ -100,6 +103,9 @@
       y: tempArr}],
       layout);
 	  
+	
+	 
+	  
 	//Gloabal Variable in this script used to track degree units. 0 = degC, 1 = degF  
 	var degCorDegF = 0;
 	function tempUnitSwap(){
@@ -124,6 +130,36 @@
 	
 	//Call the instantaneous temp print function
 	printCurrentTemp();
+	
+	setInterval(function(){
+		var timeArr = [], tempArr = [];
+		$.get('/sendTemps', function(data, status){
+			timeArr = data[1];
+			tempArr = data[0];
+			
+
+			var layout = {
+			  xaxis: {
+				title: { text: 'Seconds Ago from Current Time (s)'},
+				range: [timeArr.length-50, timeArr.length] 
+			  }, 
+			  yaxis:{
+				title: {text: "Temperature (degC)"},
+				range: [10, 50] }, 
+				title: { text: 'Temperature vs Time'}
+			};
+
+			Plotly.newPlot(TESTER, [{
+			x: timeArr,
+			y: tempArr}] ,
+			layout, {showSendToCloud: true});
+
+			console.log(timeArr);
+			console.log(tempArr);
+
+    });
+
+	}, 1000);
 </script>
 
   <script>
@@ -215,6 +251,44 @@
   var data = [trace1, trace2];
   
   Plotly.newPlot(tester2, data, {}, {showSendToCloud: true});
+  
+  var layout = {
+    xaxis: {
+      title: { text: 'Seconds Ago from Current Time (s)'},
+      range: [0, 300] 
+    }, 
+    yaxis:{
+      title: {text: "Temperature (degC)"},
+      range: [10, 50] }, 
+      title: { text: 'Temperature vs Time'}
+    };
+
+    var x2 = [1, 2, 3, 4, 5];
+    var y2 = [16, 5, 11, 9, 4];
+	setInterval(function(){ 
+    var number = x2[x2.length - 1]+1;
+    x2.push(number);
+    var randNum2 = Math.floor((Math.random() * 10) + 10);
+    y2.push(randNum2);
+
+    var layout = {
+        xaxis: {
+          title: { text: 'Seconds Ago from Current Time (s)'},
+          range: [x2.length - 10, x2.length] 
+      }
+    };
+
+    var trace2 = {
+      x: x2,
+      y: y2,
+      type: 'scatter'
+    };
+
+    var data = [trace2];
+
+    Plotly.newPlot(tester2, data, layout, {showSendToCloud: true});
+
+   }, 1000);
   </script>
   
   </body>

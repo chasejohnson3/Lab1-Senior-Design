@@ -55,6 +55,25 @@ con.connect(function(err){
     });
 })
 
+app.get('/sendTemps', function(req, resp){
+  con.query(sql, function(err, result, fields){
+    if (err) throw err;
+    var i = 0;
+    for (i=0; i<result.length; i++)
+    {
+		// Missing values in SQL are interpreted as NULL so the below if will translate null values between javascript and SQL
+		if(result[i].Temp){
+			tempArr[i] = result[i];
+		}else{
+			tempArr[i] = null;
+		}
+        timeArr[i] = result[i].Time;
+    }
+    resp.send([tempArr, timeArr]);
+    });
+    
+});
+
 app.get('/sendText', function(req, resp){
     console.log("test in index.js");
     var nodemailer = require('nodemailer');
