@@ -104,12 +104,9 @@
 
     var tempArrStr = document.querySelector(".tempArr").textContent;
     var timeArrStr = document.querySelector(".timeArr").textContent;
-	//var disPwrStr = document.querySelector(".disPwr").textContent; 
 
-    
     console.log("Temp arr str is " + tempArrStr);
     console.log("Time arr str is " + timeArrStr);
-	//console.log("Display Status is " + disPwrStr);
 	
     var tempArr = tempArrStr.split(',').map(function(item){
       return parseInt(item, 10);
@@ -118,10 +115,8 @@
       return parseInt(item, 10);
     });
 	
-    
     console.log("Temp arr is " + tempArr);
     console.log("Time arr is " + timeArr);
-	//console.log("disPwr arr is " + disPwrArr);
 
     // document.getElementById("test").innerHTML = tempArr
   
@@ -131,10 +126,7 @@
       // y: JSON.parse(tempArr)}], 
       x: timeArr,
       y: tempArr}],
-      layout);
-	  
-	
-	 
+      layout);	 
 	  
 	//Gloabal Variable in this script used to track degree units. 0 = degC, 1 = degF  
 	var degCorDegF = 0;
@@ -167,7 +159,6 @@
 			timeArr = data[1];
 			tempArr = data[0];
 			
-
 			var layout = {
 			  xaxis: {
 				title: { text: 'Seconds Ago from Current Time (s)'},
@@ -191,17 +182,19 @@
 
 	}, 1000);
 	
-//Call the logic at /display every second to get the latest 	
-setInterval(function(){
+	//Call the logic at /display every second to get the latest 	
+	setInterval(function(){
 		var disPwr = 1;
 		$.get('/display', function(data, status){
 			disPwr = data[0];
-			
-			console.log(disPwr);
 
-    });
+		});
 
 	}, 1000);
+	
+	console.log(disPwr);
+	
+	
 	
 	
 	
@@ -244,9 +237,10 @@ setInterval(function(){
     }
 </script>
 <script>
-	function toggleDisplay(form)
+	// Calls the logic at /sendDisplayStatus in index.js to write display status to database
+	function toggleDisplay()
 	{
-		// Insert logic to write 0 or 1 to the DisplayStatus table in our database
+			$.post("/sendDisplayStatus")
 	}
 </script>
 
@@ -279,7 +273,7 @@ setInterval(function(){
   <p> 
   Toggle instantaneous temp reading:
   <INPUT NAME="degSwap" VALUE="degC <-> degF" TYPE=BUTTON 
-  onClick=tempUnitSwap()>
+  onClick=toggleDisplay()>
   <p>
   Toggle thermostat display
   <INPUT NAME="displayPower" VALUE="Dispaly OFF/ON" TYPE=BUTTON 

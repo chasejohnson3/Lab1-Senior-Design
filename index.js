@@ -26,7 +26,7 @@ con.connect(function(err){
     console.log("Connected");
 });
 
- app.get('/', function(req, resp){
+app.get('/', function(req, resp){
     con.query(sql, function(err, result, fields){
         if (err) throw err;
         var i = 0;
@@ -45,7 +45,7 @@ con.connect(function(err){
  app.get('/display', function(req, resp){
     con.query(displayStatusTablePath, function(err1, rows, fields){
         if (err1) throw err1;
-		localDisPwr = rows[0].dispPwrOnOff;
+		localDisPwr = rows[0].currDisPwr;
 		
         resp.send([localDisPwr]); //Send the result back to the function that requested from /display
         });
@@ -86,7 +86,9 @@ app.get('/sendText', function(req, resp){
         pass: 'BuckyStuck440'
       }
     });
-    
+
+
+	
     var mailOptions = {
       from: 'BuckyStuck11@gmail.com',
     //   to: phone_num + @email.uscc.net
@@ -115,6 +117,10 @@ app.get('/toggleDisplayPwr', function(req, resp){
         });
     });
 }) */
-
+app.post('/sendDisplayStatus', function(req, resp){
+	//Accomplishes a logical NOT of the display status that is stored in the database
+	con.query("update Lab1.DisplayStatus set prevDisPwr = currDisPwr, currDisPwr =@temp where (@temp:=prevDisPwr) IS NOT NULL");
+	
+});
 
 app.listen(PORT);
