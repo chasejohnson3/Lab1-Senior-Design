@@ -42,18 +42,14 @@ con.connect(function(err){
     });
 })
 
-//Warning: This works but only if you go to http://localhost:5000/display. Regular  http://localhost:5000 is broken using this.
-//But i'm keeping it temporarily for debugging the display functionality
  app.get('/display', function(req, resp){
     con.query(displayStatusTablePath, function(err1, rows, fields){
         if (err1) throw err1;
 		localDisPwr = rows[0].dispPwrOnOff;
 		
-        resp.render(__dirname + "/index.ejs", {	
-			disPwr: localDisPwr
+        resp.send([localDisPwr]); //Send the result back to the function that requested from /display
         });
     });
-})
 
 app.get('/sendTemps', function(req, resp){
   con.query(sql, function(err, result, fields){

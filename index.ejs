@@ -49,8 +49,38 @@
   <p>
   
   <h1 class="tempArr" style="visibility: hidden;height:0px"><%= tempArr%></h1>
+<script>
+  setInterval(function(){
+		var timeArr = [], tempArr = [];
+		$.get('/sendTemps', function(data, status){
+			timeArr = data[1];
+			tempArr = data[0];
+			
+
+			var layout = {
+			  xaxis: {
+				title: { text: 'Seconds Ago from Current Time (s)'},
+				range: [timeArr.length-50, timeArr.length] 
+			  }, 
+			  yaxis:{
+				title: {text: "Temperature (degC)"},
+				range: [10, 50] }, 
+				title: { text: 'Temperature vs Time'}
+			};
+
+			Plotly.newPlot(TESTER, [{
+			x: timeArr,
+			y: tempArr}] ,
+			layout, {showSendToCloud: true});
+
+			console.log(timeArr);
+			console.log(tempArr);
+
+    });
+
+	}, 1000);
+</script>
   <h2 class="timeArr" style="visibility: hidden;height:0px"><%= timeArr%></h2>
-  <h3 class="disPwr" style ="visibility: hidden;height:0px"><%= disPwr%></h3>
 
   <div id="tester" style="width:800px;height:350px;"></div>
   <!-- <h1 id="test">aldsfk</h1> -->
@@ -74,12 +104,12 @@
 
     var tempArrStr = document.querySelector(".tempArr").textContent;
     var timeArrStr = document.querySelector(".timeArr").textContent;
-	var disPwrStr = document.querySelector(".disPwr").textContent; 
+	//var disPwrStr = document.querySelector(".disPwr").textContent; 
 
     
     console.log("Temp arr str is " + tempArrStr);
     console.log("Time arr str is " + timeArrStr);
-	console.log("Display Status is " + disPwrStr);
+	//console.log("Display Status is " + disPwrStr);
 	
     var tempArr = tempArrStr.split(',').map(function(item){
       return parseInt(item, 10);
@@ -160,6 +190,21 @@
     });
 
 	}, 1000);
+	
+//Call the logic at /display every second to get the latest 	
+setInterval(function(){
+		var disPwr = 1;
+		$.get('/display', function(data, status){
+			disPwr = data[0];
+			
+			console.log(disPwr);
+
+    });
+
+	}, 1000);
+	
+	
+	
 </script>
 
   <script>
@@ -176,13 +221,22 @@
   </script>
 
 <script>
+	function alert(){
+	
+	
+	}
+
+
+
     function sendText() {
       phone_number = document.getElementById("phoneNum");
       // var url = new URL(__dirname + "./sendText");
       // console.log(url);
       var carrierExt = document.getElementById("carrierExt").value;
       var phoneNum = document.getElementById("phoneNum").value;
-      url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt;
+	  var maxMsg = document.getElementById("maxMessage").value;
+	  var minMsg = document.getElementById("minMessage").value;
+      url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt; // JACOB: Append logic for max and min messages here
       console.log(url);
       window.location.href = url;
 
