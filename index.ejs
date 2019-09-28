@@ -15,7 +15,6 @@
     window.location.href = "./";
   }
 
-  // setTimeout(function(){refresh(), 1000});
 
   // done hiding from old browsers -->
   // Credit: https://computer.howstuffworks.com/javascript.htm
@@ -97,10 +96,6 @@
     };
   
     var url = new URL(window.location.href);
-    // var tempArr = url.searchParams.get("tempArr");
-    // var timeArr = url.searchParams.get("timeArr");
-    // var tempArr = <%- tempArr %>;
-    // var timeArr = <%- timeArr %>;
 
     var tempArrStr = document.querySelector(".tempArr").textContent;
     var timeArrStr = document.querySelector(".timeArr").textContent;
@@ -118,12 +113,9 @@
     console.log("Temp arr is " + tempArr);
     console.log("Time arr is " + timeArr);
 
-    // document.getElementById("test").innerHTML = tempArr
   
     TESTER = document.getElementById('tester');
     Plotly.plot( TESTER, [{
-      // x: JSON.parse(timeArr), // Just an example of fixed data plotting
-      // y: JSON.parse(tempArr)}], 
       x: timeArr,
       y: tempArr}],
       layout);	 
@@ -227,9 +219,16 @@
       // console.log(url);
       var carrierExt = document.getElementById("carrierExt").value;
       var phoneNum = document.getElementById("phoneNum").value;
-	  var maxMsg = document.getElementById("maxMessage").value;
-	  var minMsg = document.getElementById("minMessage").value;
-      url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt; // JACOB: Append logic for max and min messages here
+      // tempArr[tempArr.length-1] = -5;
+      var maxMsg = "";
+      if (tempArr[tempArr.length-1] > document.getElementById("maxTemp")) {
+        var maxMsg = document.getElementById("maxMessage").value;
+      }
+      var minMsg = "";
+      if (tempArr[tempArr.length-1] < document.getElementById("minTemp")) {
+        var minMsg = document.getElementById("minMessage").value;
+      }	   
+      url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt + "&minMsg=" + minMsg + "&maxMsg=" + maxMsg; // JACOB: Append logic for max and min messages here
       console.log(url);
       window.location.href = url;
 
@@ -251,16 +250,16 @@
 
   <h2>User Input Form</h2>
   Enter a max temp threshold in degrees C:
-  <INPUT NAME ="maxThreshold" VALUE="0">
+  <INPUT id="maxTemp" NAME ="maxThreshold" VALUE="100">
   <p>
   Enter max temp warning text message :
-  <INPUT NAME ="maxMessage" VALUE="Max Temp Warning: ">
+  <INPUT id="maxMessage" NAME ="maxMessage" VALUE="Max Temp Warning">
   <p>
   Enter a min temp threshold in degrees C:
-  <INPUT NAME ="minThreshold" VALUE="0">
+  <INPUT id="minTemp" NAME ="minThreshold" VALUE="0">
   <p>
   Enter min temp warning text message :
-  <INPUT NAME ="minMessage" VALUE="Min Temp Warning:">
+  <INPUT id="minMessage" NAME ="minMessage" VALUE="Min Temp Warning">
   <p>
   Enter a text-alert phone number (ex. 3196657091):
   <INPUT id="phoneNum" NAME ="phoneNumber" VALUE="0">
@@ -270,6 +269,7 @@
     <option value="@vtext.com">Verizon</option>
   </select>
   <input type=button onclick="sendText()"   value="Send Text"/>
+  
   <p> 
   Toggle instantaneous temp reading:
   <INPUT NAME="degSwap" VALUE="degC <-> degF" TYPE=BUTTON 

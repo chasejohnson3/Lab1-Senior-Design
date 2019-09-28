@@ -75,6 +75,8 @@ app.get('/sendText', function(req, resp){
     var nodemailer = require('nodemailer');
     var phone_num = req.query.phoneNum;
     var carrier_ext = req.query.carrierExt;
+    var minMsg = req.query.minMsg;
+    var maxMsg = req.query.maxMsg;
     console.log("Full Path: " + req.url);
     console.log("Phone number is " + phone_num);
     
@@ -95,7 +97,7 @@ app.get('/sendText', function(req, resp){
     //   to: phone_num + "@messaging.sprintpcs.com",
       to: phone_num + carrier_ext,
       subject: 'Sending Email using Node.js',
-      text: 'That was easy!'
+      text: minMsg + " " + maxMsg
     };
     
     transporter.sendMail(mailOptions, function(error, info){
