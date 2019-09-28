@@ -83,7 +83,7 @@ def read_temperature():
 	    tf = tc*9.0/5.0 + 32.0  
 
 	    cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
-	    cur.execute("INSERT INTO DisplayStatus (Time, dispPwrOnOff) VALUES(%s, %s)", (r,0))
+#	    cur.execute("INSERT INTO DisplayStatus (Time, dispPwrOnOff) VALUES(%s, %s)", (r,0))
 	    db.commit()
 
 	    if writing_to_LCD:
@@ -93,7 +93,7 @@ def read_temperature():
 ################################################################################      
 #Function to update backlight
 ################################################################################    
-def update_backlight():	
+#def update_backlight():	
 	
 	
 	
@@ -103,7 +103,7 @@ def update_backlight():
 ################################################################################      
 if __name__=='__main__':
 	p1 = Process(target=read_temperature)
-	p1.start()
+	p1.start()	
 	p2 = Process(target=button_callback(26))
 	p2.start()
   
