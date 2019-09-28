@@ -59,9 +59,9 @@ while True:
         tf = tc*9.0/5.0 + 32.0
         
         #Put any SQL command here - In our case, put sensor data in database
-    #    cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
+	cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
         
-     #   db.commit()
+     	db.commit()
 	
 	cur.execute("select * from Lab1.DisplayStatus")
 	resultSet = cur.fetchall()
