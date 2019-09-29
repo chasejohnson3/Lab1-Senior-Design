@@ -48,37 +48,7 @@
   <p>
   
   <h1 class="tempArr" style="visibility: hidden;height:0px"><%= tempArr%></h1>
-<script>
-  setInterval(function(){
-		var timeArr = [], tempArr = [];
-		$.get('/sendTemps', function(data, status){
-			timeArr = data[1];
-			tempArr = data[0];
-			
 
-			var layout = {
-			  xaxis: {
-				title: { text: 'Seconds Ago from Current Time (s)'},
-				range: [timeArr.length-50, timeArr.length] 
-			  }, 
-			  yaxis:{
-				title: {text: "Temperature (degC)"},
-				range: [10, 50] }, 
-				title: { text: 'Temperature vs Time'}
-			};
-
-			Plotly.newPlot(TESTER, [{
-			x: timeArr,
-			y: tempArr}] ,
-			layout, {showSendToCloud: true});
-
-			console.log(timeArr);
-			console.log(tempArr);
-
-    });
-
-	}, 1000);
-</script>
   <h2 class="timeArr" style="visibility: hidden;height:0px"><%= timeArr%></h2>
 
   <div id="tester" style="width:800px;height:350px;"></div>
@@ -88,7 +58,7 @@
   var layout = {
     xaxis: {
     title: { text: 'Seconds Ago from Current Time (s)'},
-    range: [0, 300] }, 
+    range: [timeArr.length -300, timeArr.length] }, 
     yaxis:{
     title: {text: "Temperature (degC)"},
     range: [10, 50] }, 
@@ -114,11 +84,11 @@
     console.log("Time arr is " + timeArr);
 
   
-    TESTER = document.getElementById('tester');
-    Plotly.plot( TESTER, [{
-      x: timeArr,
-      y: tempArr}],
-      layout);	 
+     TESTER = document.getElementById('tester');
+    // Plotly.plot( TESTER, [{
+    //   x: timeArr,
+    //   y: tempArr}],
+    //   layout);	 
 	  
 	//Gloabal Variable in this script used to track degree units. 0 = degC, 1 = degF  
 	var degCorDegF = 0;
@@ -158,7 +128,9 @@
 			  }, 
 			  yaxis:{
 				title: {text: "Temperature (degC)"},
-				range: [10, 50] },
+				range: [10, 50] }, 
+				title: { text: 'Temperature vs Time'},
+        
 			};
 
 			Plotly.newPlot(TESTER, [{
@@ -191,27 +163,8 @@
 	
 </script>
 
-  <script>
-    function httpGetAsync(theUrl, callback)
-    {
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() { 
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-                callback(xmlHttp.responseText);
-        }
-        xmlHttp.open("GET", "https://github.com/chasejohnson3/Lab1-Senior-Design", true); // true for asynchronous 
-        xmlHttp.send(null);
-    }
-  </script>
 
 <script>
-	function alert(){
-	
-	
-	}
-
-
-
     function sendText() {
       phone_number = document.getElementById("phoneNum");
       // var url = new URL(__dirname + "./sendText");
