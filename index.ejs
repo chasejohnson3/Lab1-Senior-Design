@@ -55,15 +55,6 @@
   <!-- <h1 id="test">aldsfk</h1> -->
   <script>
   // Set limits on axes
-  var layout = {
-    xaxis: {
-    title: { text: 'Seconds Ago from Current Time (s)'},
-    range: [timeArr.length -300, timeArr.length] }, 
-    yaxis:{
-    title: {text: "Temperature (degC)"},
-    range: [10, 50] }, 
-    title: { text: 'Temperature vs Time'}
-    };
   
     var url = new URL(window.location.href);
 
@@ -84,11 +75,7 @@
     console.log("Time arr is " + timeArr);
 
   
-     TESTER = document.getElementById('tester');
-    // Plotly.plot( TESTER, [{
-    //   x: timeArr,
-    //   y: tempArr}],
-    //   layout);	 
+  TESTER = document.getElementById('tester');
 	  
 	//Gloabal Variable in this script used to track degree units. 0 = degC, 1 = degF  
 	var degCorDegF = 0;
@@ -124,7 +111,7 @@
 			var layout = {
 			  xaxis: {
 				title: { text: 'Seconds Ago from Current Time (s)'},
-				range: [timeArr.length-300, timeArr.length] 
+				range: [timeArr[timeArr.length - 300], timeArr[timeArr.length]] 
 			  }, 
 			  yaxis:{
 				title: {text: "Temperature (degC)"},
