@@ -21,9 +21,12 @@
   //Information for setting up Ploty: https://plot.ly/javascript/getting-started/
   //Look at https://www.youtube.com/watch?v=2-tnkzG0sKU for information on plotting using Plotly
   </script>
-
-  <button id="refresh" onclick="refresh()">refresh</button>
-  
+	<style type="text/css">
+   div.bold-red {
+      color: red;
+      font-weight: bold;
+	}
+</style>
   <!--Include the plotly library -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -34,18 +37,6 @@
   <body>
   <FORM>
   <h1>Real-Time Temperature Sensor Web Interface </h1>
-  <h2>Example Fahrenheit to Celsius Converter</h2>
-  Enter a temperature in degrees F: 
-  <INPUT NAME="DegF" VALUE="0" MAXLENGTH="15" SIZE=15>
-  <p>
-  Click this button to calculate the temperature 
-  in degrees C:
-  <INPUT NAME="calc" VALUE="Calculate" TYPE=BUTTON 
-  onClick=tempSwap(this.form)>
-  <p>
-  Temperature in degrees C is: 
-  <INPUT NAME="DegC" READONLY SIZE=15>
-  <p>
   
   <h1 class="tempArr" style="visibility: hidden;height:0px"><%= tempArr%></h1>
 
@@ -83,25 +74,6 @@
   	  degCorDegF = !degCorDegF;
 	}
 	
-	//This function pulls the most recent temperature and prints it in the user's preferred units	
-	function printCurrentTemp(){
-	  //The user wants instantaneous temp in Celsius
-	  if(degCorDegF == 0){
-		document.write(tempArr[tempArr.length-1] + " degC");
-	  }
-	  //The user wants instantaneous temp in Fahrenheit 
-	  else{
-	  //Convert the current Temp to degF
-		var currTempC = tempArr[tempArr.length-1];
-		var currTempF = (currTempC*(9/5) + 32);
-	  
-		document.write(" " + currTempF + " degF");
-	  } 
-	}
-	
-	//Call the instantaneous temp print function
-	printCurrentTemp();
-	
 	setInterval(function(){
 		var timeArr = [], tempArr = [];
 		$.get('/sendTemps', function(data, status){
@@ -127,8 +99,29 @@
 
 			console.log(timeArr);
 			console.log(tempArr);
+			
+      //******** Print the instantaneous Temp below the Temp graph **********//
+      if(tempArr[tempArr.length-1] == null){
+        document.getElementById("insttemp").textContent = "UNPLUGGED SENSOR";
+      }	
+      //The user wants instantaneous temp in Celsius
+      else if(degCorDegF == 0){
+        document.getElementById("insttemp").textContent = tempArr[tempArr.length-1] + " degC";
+      }
+      //The user wants instantaneous temp in Fahrenheit 
+      else{
+      //Convert the current Temp to degF
+        var currTempC = tempArr[tempArr.length-1];
+        var currTempF = (currTempC*(9/5) + 32);
 
-    });
+        document.getElementById("insttemp").textContent = currTempF + " degF";
+      }
+
+      
+    if(tempArr[tempArr.length-2] != tempArr[tempArr.length-1]){
+      sendText(tempArr);
+    }
+  });
 
 	}, 1000);
 	
@@ -137,41 +130,33 @@
 		var disPwr = 1;
 		$.get('/display', function(data, status){
 			disPwr = data[0];
-
+	
+			console.log(disPwr);
 		});
 
-	}, 1000);
-	
-	console.log(disPwr);
-	
-	
-	
+	}, 1000);	
 	
 	
 </script>
 
 
 <script>
-    function sendText() {
-      phone_number = document.getElementById("phoneNum");
-      // var url = new URL(__dirname + "./sendText");
-      // console.log(url);
+    function sendText(tempArr) {
       var carrierExt = document.getElementById("carrierExt").value;
       var phoneNum = document.getElementById("phoneNum").value;
       // tempArr[tempArr.length-1] = -5;
       var maxMsg = "";
-      if (tempArr[tempArr.length-1] > document.getElementById("maxTemp")) {
+      if (tempArr[tempArr.length-2] > parseInt(document.getElementById("maxTemp").value)) {
         var maxMsg = document.getElementById("maxMessage").value;
       }
       var minMsg = "";
-      if (tempArr[tempArr.length-1] < document.getElementById("minTemp")) {
+      if (tempArr[tempArr.length-2] < parseInt(document.getElementById("minTemp").value)) {
         var minMsg = document.getElementById("minMessage").value;
       }	   
-      url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt + "&minMsg=" + minMsg + "&maxMsg=" + maxMsg; // JACOB: Append logic for max and min messages here
+      url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt + "&minMsg=" + minMsg + "&maxMsg=" + maxMsg;
+      //url = "./sendText?email=" + phoneNum + "&minMsg=" + minMsg + "&maxMsg=" + maxMsg;
       console.log(url);
-      window.location.href = url;
-
-      console.log("test");
+      //$.get(url);
     }
 </script>
 <script>
@@ -186,10 +171,10 @@
 <p> 
 <p id="demo"></p>
 <p>
-
+	 <div id="insttemp" class="bold-red"></div>
   <h2>User Input Form</h2>
   Enter a max temp threshold in degrees C:
-  <INPUT id="maxTemp" NAME ="maxThreshold" VALUE="100">
+  <INPUT id="maxTemp" NAME ="maxThreshold" VALUE="20">
   <p>
   Enter max temp warning text message :
   <INPUT id="maxMessage" NAME ="maxMessage" VALUE="Max Temp Warning">
@@ -201,18 +186,19 @@
   <INPUT id="minMessage" NAME ="minMessage" VALUE="Min Temp Warning">
   <p>
   Enter a text-alert phone number (ex. 3196657091):
-  <INPUT id="phoneNum" NAME ="phoneNumber" VALUE="0">
+  <INPUT id="phoneNum" NAME ="phoneNumber" VALUE="3196657091">
   <select id="carrierExt">
     <option value="@messaging.sprintpcs.com">Sprint</option>
     <option value="@email.uscc.net">US Cellular</option>
     <option value="@vtext.com">Verizon</option>
+    <option value="@txt.att.net">AT&T</option>
   </select>
   <input type=button onclick="sendText()"   value="Send Text"/>
   
   <p> 
   Toggle instantaneous temp reading:
   <INPUT NAME="degSwap" VALUE="degC <-> degF" TYPE=BUTTON 
-  onClick=toggleDisplay()>
+  onClick=tempUnitSwap()>
   <p>
   Toggle thermostat display
   <INPUT NAME="displayPower" VALUE="Dispaly OFF/ON" TYPE=BUTTON 

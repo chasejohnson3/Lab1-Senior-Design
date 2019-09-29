@@ -78,14 +78,14 @@ app.get('/sendText', function(req, resp){
     var minMsg = req.query.minMsg;
     var maxMsg = req.query.maxMsg;
     console.log("Full Path: " + req.url);
-    console.log("Phone number is " + phone_num);
     
     
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'BuckyStuck11@gmail.com',
-        pass: 'BuckyStuck440'
+        //SOMEONE'S USERNAME AND PASSWORD REQUIRED HERE
+        user: '',
+        pass: '' 
       }
     });
 
@@ -95,6 +95,7 @@ app.get('/sendText', function(req, resp){
       from: 'BuckyStuck11@gmail.com',
     //   to: phone_num + @email.uscc.net
     //   to: phone_num + "@messaging.sprintpcs.com",
+      //to: phone_num + carrier_ext,
       to: phone_num + carrier_ext,
       subject: 'Sending Email using Node.js',
       text: minMsg + " " + maxMsg
