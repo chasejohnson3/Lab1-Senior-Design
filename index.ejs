@@ -154,12 +154,11 @@
 			var layout = {
 			  xaxis: {
 				title: { text: 'Seconds Ago from Current Time (s)'},
-				range: [timeArr.length-50, timeArr.length] 
+				range: [timeArr.length-300, timeArr.length] 
 			  }, 
 			  yaxis:{
 				title: {text: "Temperature (degC)"},
-				range: [10, 50] }, 
-				title: { text: 'Temperature vs Time'}
+				range: [10, 50] },
 			};
 
 			Plotly.newPlot(TESTER, [{
