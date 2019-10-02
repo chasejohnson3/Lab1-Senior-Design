@@ -46,38 +46,44 @@ while True:
 
         r += 1
 	disPwr = False
-        f=open(DS18B20, "r")
-        data=f.read()
-        f.close()
+	
+	# If the sensor is not unplugged
+	if(path.isfile(DS18B20)):
+		f=open(DS18B20, "r")
+		data=f.read()
+		f.close()
 
-        (discard, yesorno, otherdata)=data.partition("YES")
-        if not yesorno:
-                yesorno = "NO"
+		(discard, yesorno, otherdata)=data.partition("YES")
+		if not yesorno:
+			yesorno = "NO"
 
-        (discard, sep, reading)=data.partition(" t=")
-        tc = float(reading)/1000.0
-        tf = tc*9.0/5.0 + 32.0
-        
-        #Put any SQL command here - In our case, put sensor data in database
-	cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
-        
-     	db.commit()
-	
-	cur.execute("select * from Lab1.DisplayStatus")
-	resultSet = cur.fetchall()
-	for row in resultSet:
-		print row[0], row[1]
-	db.commit()
-	
-	
-	if(row[1]):
-		lcd.clear()
-		lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
-        	print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+		(discard, sep, reading)=data.partition(" t=")
+		tc = float(reading)/1000.0
+		tf = tc*9.0/5.0 + 32.0
+
+		#Put any SQL command here - In our case, put sensor data in database
+		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
+
+		db.commit()
+
+		cur.execute("select * from Lab1.DisplayStatus")
+		resultSet = cur.fetchall()
+		for row in resultSet:
+			print row[0], row[1]
+		db.commit()
+
+
+		if(row[1]):
+			lcd.clear()
+			lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+			print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+		else:
+			lcd.clear()
 	else:
+		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, None, r))
+		db.commit()
 		lcd.clear()
-
-        #Delay 1s between readings
-        time.sleep(1.0)
-
-
+		lcd.message("Error reading data")
+		
+	#Delay 1s between readings
+	time.sleep(1.0)
