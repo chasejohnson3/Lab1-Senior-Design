@@ -78,14 +78,12 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
-
-
 r=0
 while True:
 
 	r += 1	
 	# If the sensor is not unplugged
-	p2 = null;
+
 	if(os.path.isfile(DS18B20)):
 		f=open(DS18B20, "r")
 		data=f.read()
@@ -98,7 +96,9 @@ while True:
 		(discard, sep, reading)=data.partition(" t=")
 		tc = float(reading)/1000.0
 		tf = tc*9.0/5.0 + 32.0
+		
 		p2 = Process(target = write_to_lcd, args = (r,tc,tf,yesorno))
+		
 		#Put any SQL command here - In our case, put sensor data in database
 		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
 
@@ -112,8 +112,9 @@ while True:
 		db.commit()
 		
 		#Define and start the HW button LCD print subroutine
-		p1 = Process(target=button_callback(26, r, tc, tf, yesorno))
+		p1 = Process(target=button_callback, args = (26, r, tc, tf, yesorno))
 		p1.start()
+		print "Passed HW Button"
 		
 		#Software Button logic row[1] = Lab1.DisplayStatus = 1 = display should be on.
 		if(row[1]):
