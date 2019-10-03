@@ -89,8 +89,8 @@ app.get('/sendText', function(req, resp){
       service: 'gmail',
       auth: {
         //SOMEONE'S USERNAME AND PASSWORD REQUIRED HERE
-        user: 'sachinshriram55@gmail.com',
-        pass: 'Sachin!@#' 
+        user: '',
+        pass: '' 
       }
     });
 
