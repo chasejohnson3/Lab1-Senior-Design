@@ -11,8 +11,11 @@ import MySQLdb
 import urllib2
 DS18B20="/sys/bus/w1/devices/28-021316acc9aa/w1_slave"
 
+r=0,tc=0,tf=0,yesorno=0
+
 #The subroutine called when the HW button is pushed
 def button_callback(channel, r, tc, tf, yesorno):
+	global r,tc,tf,yesorno
 	while 1:
 		GPIO.wait_for_edge(26, GPIO.RISING)
 		#print("turned on")
@@ -78,7 +81,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 p3 = None
-r=0
+count = 0
 while True:
 	
 	r += 1	
@@ -112,9 +115,10 @@ while True:
 		db.commit()
 		
 		#Define and start the HW button LCD print subroutine
+		if count==0:
+			count = 1
 			p3 = Process(target=button_callback, args=(26, r, tc, tf, yesorno))
 			p3.start()
-			p3.terminate()
 		
 		#Software Button logic row[1] = Lab1.DisplayStatus = 1 = display should be on.
 		if(row[1]):
