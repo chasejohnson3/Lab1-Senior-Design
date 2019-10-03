@@ -44,8 +44,6 @@ cur = db.cursor()
 #Clear the database upon Pi boot
 cur.execute("truncate Lab1.TempData")
 db.commit()
-cur.execute("truncate Lab1.DisplayStatus")
-db.commit()
 
 r=0
 while True:

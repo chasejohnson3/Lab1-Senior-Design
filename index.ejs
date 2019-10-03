@@ -74,7 +74,7 @@
   	  degCorDegF = !degCorDegF;
   }
 
-
+	var counter = 0;
 	var lengthTimeArr = 0; // Glob var for cheking whether timeArr has changed, (when Pi is off)
 	var time = 0; // Global variable for continuously couting time
 	var timeArr = [], tempArr = []; // Global arrays for continuous graph
@@ -84,7 +84,14 @@
 			var timeArr2 = data[1];
 			var tempArr2 = data[0];
 			timeArr.push(time); // INcrease time always for the graph
-      time++;
+			time++;
+			counter++;
+			<!-- if(counter ==4){ -->
+				<!-- counter = 0; -->
+				<!-- message = "3000"; -->
+			<!-- } -->
+			
+			
 			if(lengthTimeArr == timeArr2.length){
         // PI is off
 				tempArr.push(null);
@@ -107,8 +114,9 @@
 				  }
 				}
 			}
-			
-			lengthTimeArr = timeArr2.length; // Update the leght of time from the Database
+<!-- 			if(counter ==2){
+				lengthTimeArr = timeArr2.length;
+			//} -->			// Update the leght of time from the Database
 			document.getElementById("insttemp").textContent = message;
 			
 			var layout = {
@@ -131,8 +139,10 @@
       }}] ,
 			layout, {showSendToCloud: true});
 
-			console.log(timeArr2);
-			console.log(tempArr2);
+			//console.log(timeArr2);
+			//console.log(tempArr2);
+			console.log(lengthTimeArr)
+			console.log(timeArr2.length)
 			
 		  //     //******** Print the instantaneous Temp below the Temp graph **********//
 		  //     if(tempArr[tempArr.length-1] == null){
@@ -166,7 +176,7 @@
 			disPwr = data[0];
 		});
 
-	}, 100);	
+	}, 1000);	
 	
 	
 </script>
@@ -239,7 +249,7 @@
   </FORM>
   
   <div id="tester2" style="width:600px;height:250px;"></div>
-  <script>
+ <!--  <script>
   var trace1 = {
     x: [1, 2, 3, 4],
     y: [10, 15, 13, 17],
@@ -296,7 +306,7 @@
     Plotly.newPlot(tester2, data, layout, {showSendToCloud: true});
 
    }, 1000);
-  </script>
+  </script> -->
   
   </body>
   </html>

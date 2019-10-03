@@ -52,20 +52,25 @@ app.get('/', function(req, resp){
     });
 
 app.get('/sendTemps', function(req, resp){
+	
   con.query(sql, function(err, result, fields){
     if (err) throw err;
     var i = 0;
+	var timeArr2 = [];
+	var tempArr2 = [];
     for (i=0; i<result.length; i++)
     {
+		
 		// Missing values in SQL are interpreted as NULL so the below if will translate null values between javascript and SQL
 		if(result[i].Temp){
-			tempArr[i] = result[i].Temp;
+			tempArr2[i] = result[i].Temp;
 		}else{
-			tempArr[i] = null;
+			tempArr2[i] = null;
 		}
-        timeArr[i] = result[i].Time;
+        timeArr2[i] = result[i].Time;
     }
-    resp.send([tempArr, timeArr]);
+	console.log(tempArr2[tempArr2.length-1]);
+    resp.send([tempArr2, timeArr2]);
     });
     
 });
