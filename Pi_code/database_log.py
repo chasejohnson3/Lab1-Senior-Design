@@ -41,10 +41,16 @@ db = MySQLdb.connect(host="34.68.18.19",
 #Set up a cursor object so you can accomplish your desired queries
 cur = db.cursor()
 
+#Clear the database upon Pi boot
+cur.execute("truncate Lab1.TempData")
+db.commit()
+cur.execute("truncate Lab1.DisplayStatus")
+db.commit()
+
 r=0
 while True:
 
-        r += 1
+	r += 1
 	disPwr = False
 	
 	# If the sensor is not unplugged
@@ -86,4 +92,4 @@ while True:
 		lcd.message("Error reading data")
 		
 	#Delay 1s between readings
-	time.sleep(1.0)
+	time.sleep(0.5)
