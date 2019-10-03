@@ -52,13 +52,38 @@ cur = db.cursor()
 cur.execute("truncate Lab1.TempData")
 db.commit()
 
+#Set up the HW pushbutton
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+
+p1 = Process(target=button_callback(26))
+p1.start()
+
+#The subroutine called when the HW button is pushed
+def button_callback(channel):
+	while 1:
+		GPIO.wait_for_edge(26, GPIO.RISING)
+		#print("turned on")
+		p1 =Process(target=write_to_lcd) 
+		p1.start()
+		GPIO.wait_for_edge(26, GPIO.FALLING)
+		#print("turned off")
+		p1.terminate()
+		lcd.clear()
+
+		
+def write_to_lcd(r,tc,tf,yesorno):
+	lcd.clear()
+	lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+	#print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+
 r=0
 while True:
 
-	r += 1
-	disPwr = False
-	
+	r += 1	
 	# If the sensor is not unplugged
+	p2 = null;
 	if(os.path.isfile(DS18B20)):
 		f=open(DS18B20, "r")
 		data=f.read()
@@ -71,12 +96,13 @@ while True:
 		(discard, sep, reading)=data.partition(" t=")
 		tc = float(reading)/1000.0
 		tf = tc*9.0/5.0 + 32.0
-
+		p2 = Process(target = write_to_lcd, args = (r,tc,tf,yesorno))
 		#Put any SQL command here - In our case, put sensor data in database
 		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
 
 		db.commit()
 
+		#Pulls DisplayStatus bit from database
 		cur.execute("select * from Lab1.DisplayStatus")
 		resultSet = cur.fetchall()
 		for row in resultSet:
@@ -85,16 +111,22 @@ while True:
 
 		#Software Button logic row[1] = Lab1.DisplayStatus = 1 = display should be on.
 		if(row[1]):
-			lcd.clear()
-			lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
-			print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+		########### CALL write_to_lcd() METHOD HERE #############
+			p2.start()
+			# lcd.clear()
+			# lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+			# print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+			time.sleep(1);
+			#p2.terminate()
 		else:
 			lcd.clear()
 	else:
 		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, None, r))
 		db.commit()
 		lcd.clear()
-		lcd.message("Error reading data")
+		lcd.message("Uplugged Sensor")
 		
 	#Delay 1s between readings
 	time.sleep(0.5)
+	if (p2 != null) :
+		p2.terminate()
