@@ -12,11 +12,11 @@ import urllib2
 DS18B20="/sys/bus/w1/devices/28-021316acc9aa/w1_slave"
 
 #The subroutine called when the HW button is pushed
-def button_callback(channel):
+def button_callback(channel, r, tc, tf, yesorno):
 	while 1:
 		GPIO.wait_for_edge(26, GPIO.RISING)
 		#print("turned on")
-		p1 =Process(target=write_to_lcd, args(r, ) 
+		p1 =Process(target=write_to_lcd, args =(r,tc,tf,yesorno)) 
 		p1.start()
 		GPIO.wait_for_edge(26, GPIO.FALLING)
 		#print("turned off")
@@ -78,8 +78,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
-p1 = Process(target=button_callback(26))
-p1.start()
+
 
 r=0
 while True:
@@ -99,7 +98,7 @@ while True:
 		(discard, sep, reading)=data.partition(" t=")
 		tc = float(reading)/1000.0
 		tf = tc*9.0/5.0 + 32.0
-		#p2 = Process(target = write_to_lcd, args = (r,tc,tf,yesorno))
+		p2 = Process(target = write_to_lcd, args = (r,tc,tf,yesorno))
 		#Put any SQL command here - In our case, put sensor data in database
 		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
 
@@ -111,16 +110,16 @@ while True:
 		for row in resultSet:
 			print row[0], row[1]
 		db.commit()
-
+		
+		#Define and start the HW button LCD print subroutine
+		p1 = Process(target=button_callback(26, r, tc, tf, yesorno))
+		p1.start()
+		
 		#Software Button logic row[1] = Lab1.DisplayStatus = 1 = display should be on.
 		if(row[1]):
-		########### CALL write_to_lcd() METHOD HERE #############
+			#Start the software button call to the LCD print subroutine
 			p2.start()
-			# lcd.clear()
-			# lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
-			# print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
-			time.sleep(1);
-			#p2.terminate()
+
 		else:
 			lcd.clear()
 	else:

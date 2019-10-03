@@ -69,7 +69,7 @@ app.get('/sendTemps', function(req, resp){
 		}
         timeArr2[i] = result[i].Time;
     }
-	console.log(tempArr2[tempArr2.length-1]);
+	//console.log(tempArr2[tempArr2.length-1]);
     resp.send([tempArr2, timeArr2]);
     });
     
