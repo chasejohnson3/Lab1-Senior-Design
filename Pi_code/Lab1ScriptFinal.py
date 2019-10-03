@@ -79,7 +79,6 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 p3 = None
 r=0
-count = 0
 while True:
 	
 	r += 1	
@@ -113,10 +112,9 @@ while True:
 		db.commit()
 		
 		#Define and start the HW button LCD print subroutine
-		if(count == 0):
-			count=1
 			p3 = Process(target=button_callback, args=(26, r, tc, tf, yesorno))
 			p3.start()
+			p3.terminate()
 		
 		#Software Button logic row[1] = Lab1.DisplayStatus = 1 = display should be on.
 		if(row[1]):
@@ -130,8 +128,3 @@ while True:
 		db.commit()
 		lcd.clear()
 		lcd.message("Uplugged Sensor")
-		
-	#Delay 1s between readings
-	time.sleep(0.5)
-	if (p2 != None) :
-		p2.terminate()
