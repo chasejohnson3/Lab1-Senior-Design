@@ -84,15 +84,15 @@ app.get('/sendText', function(req, resp){
       service: 'gmail',
       auth: {
         //SOMEONE'S USERNAME AND PASSWORD REQUIRED HERE
-        user: '',
-        pass: '' 
+        user: 'sachinshriram55@gmail.com',
+        pass: 'Sachin!@#' 
       }
     });
 
 
 	
     var mailOptions = {
-      from: 'BuckyStuck11@gmail.com',
+      from: 'buckystuck11@yahoo.com',
     //   to: phone_num + @email.uscc.net
     //   to: phone_num + "@messaging.sprintpcs.com",
       //to: phone_num + carrier_ext,
@@ -108,7 +108,6 @@ app.get('/sendText', function(req, resp){
         console.log('Email sent to ' + mailOptions.to + ': '+ info.response);
       }
     });
-    resp.redirect("/");  
 })
 
 /* Add logic here to 1)Clear the Lab1.DisplayStatus table 2) Set the bit to 1(On) or 0 (Off)

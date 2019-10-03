@@ -72,7 +72,9 @@
 	var degCorDegF = 0;
 	function tempUnitSwap(){
   	  degCorDegF = !degCorDegF;
-	}
+  }
+
+
 	var lengthTimeArr = 0; // Glob var for cheking whether timeArr has changed, (when Pi is off)
 	var time = 0; // Global variable for continuously couting time
 	var timeArr = [], tempArr = []; // Global arrays for continuous graph
@@ -82,9 +84,9 @@
 			var timeArr2 = data[1];
 			var tempArr2 = data[0];
 			timeArr.push(time); // INcrease time always for the graph
-			time++;
+      time++;
 			if(lengthTimeArr == timeArr2.length){
-				// PI is off
+        // PI is off
 				tempArr.push(null);
 				message = "System OFF";
 			}else{
@@ -102,7 +104,7 @@
 						var currTempF = (currTempC*(9/5) + 32);
 
 						message = currTempF + " degF";
-				      	}
+				  }
 				}
 			}
 			
@@ -112,7 +114,7 @@
 			var layout = {
 			  xaxis: {
 				title: { text: 'Seconds Ago from Current Time (s)'},
-				range: [timeArr[timeArr.length - 300], timeArr[timeArr.length]] 
+				range: [timeArr[timeArr.length-1]-300, timeArr[timeArr.length-1]] 
 			  }, 
 			  yaxis:{
 				title: {text: "Temperature (degC)"},
@@ -123,32 +125,35 @@
 
 			Plotly.newPlot(TESTER, [{
 			x: timeArr,
-			y: tempArr}] ,
+			y: tempArr, type:'scatter', marker: {
+        color: 'rgba(252,141,98,1)',
+        line: {color: 'black'}
+      }}] ,
 			layout, {showSendToCloud: true});
 
-			console.log(timeArr);
-			console.log(tempArr);
+			console.log(timeArr2);
+			console.log(tempArr2);
 			
-		      //******** Print the instantaneous Temp below the Temp graph **********//
-		      if(tempArr[tempArr.length-1] == null){
-			document.getElementById("insttemp").textContent = "UNPLUGGED SENSOR";
-		      }	
-		      //The user wants instantaneous temp in Celsius
-		      else if(degCorDegF == 0){
-			document.getElementById("insttemp").textContent = tempArr[tempArr.length-1] + " degC";
-		      }
-		      //The user wants instantaneous temp in Fahrenheit 
-		      else{
-		      //Convert the current Temp to degF
-			var currTempC = tempArr[tempArr.length-1];
-			var currTempF = (currTempC*(9/5) + 32);
+		  //     //******** Print the instantaneous Temp below the Temp graph **********//
+		  //     if(tempArr[tempArr.length-1] == null){
+			// document.getElementById("insttemp").textContent = "UNPLUGGED SENSOR";
+		  //     }	
+		  //     //The user wants instantaneous temp in Celsius
+		  //     else if(degCorDegF == 0){
+			// document.getElementById("insttemp").textContent = tempArr[tempArr.length-1] + " degC";
+		  //     }
+		  //     //The user wants instantaneous temp in Fahrenheit 
+		  //     else{
+		  //     //Convert the current Temp to degF
+      //       var currTempC = tempArr[tempArr.length-1];
+      //       var currTempF = (currTempC*(9/5) + 32);
 
-			document.getElementById("insttemp").textContent = currTempF + " degF";
-		      }
+      //       document.getElementById("insttemp").textContent = currTempF + " degF";
+		  //     }
 
 
 		    if(tempArr[tempArr.length-1] != null && (tempArr[tempArr.length-2] != tempArr[tempArr.length-1])){
-		      sendText(tempArr);
+		      //sendText(tempArr);
 		    }
   	});
 
@@ -159,11 +164,9 @@
 		var disPwr = 1;
 		$.get('/display', function(data, status){
 			disPwr = data[0];
-	
-			console.log(disPwr);
 		});
 
-	}, 1000);	
+	}, 100);	
 	
 	
 </script>
@@ -184,7 +187,7 @@
       url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt + "&minMsg=" + minMsg + "&maxMsg=" + maxMsg;
       //url = "./sendText?email=" + phoneNum + "&minMsg=" + minMsg + "&maxMsg=" + maxMsg;
       console.log(url);
-      //$.get(url); // Uncommet this line after verifying. this sends the text request
+      $.get(url); // Uncommet this line after verifying. this sends the text request
     }
 </script>
 <script>
@@ -202,7 +205,7 @@
 	 <div id="insttemp" class="bold-red"></div>
   <h2>User Input Form</h2>
   Enter a max temp threshold in degrees C:
-  <INPUT id="maxTemp" NAME ="maxThreshold" VALUE="20">
+  <INPUT id="maxTemp" NAME ="maxThreshold" VALUE="60">
   <p>
   Enter max temp warning text message :
   <INPUT id="maxMessage" NAME ="maxMessage" VALUE="Max Temp Warning">
@@ -214,7 +217,7 @@
   <INPUT id="minMessage" NAME ="minMessage" VALUE="Min Temp Warning">
   <p>
   Enter a text-alert phone number (ex. 3196657091):
-  <INPUT id="phoneNum" NAME ="phoneNumber" VALUE="3196657091">
+  <INPUT id="phoneNum" NAME ="phoneNumber" VALUE="8158760522">
   <select id="carrierExt">
     <option value="@messaging.sprintpcs.com">Sprint</option>
     <option value="@email.uscc.net">US Cellular</option>
