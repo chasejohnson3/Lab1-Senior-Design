@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # Example using a character LCD connected to a Raspberry Pi or BeagleBone Black.
+from multiprocessing import Process
+import RPi.GPIO as GPIO
 import time
 import Adafruit_CharLCD as LCD
 import os
@@ -8,6 +10,25 @@ import time
 import MySQLdb
 import urllib2
 DS18B20="/sys/bus/w1/devices/28-021316acc9aa/w1_slave"
+
+#The subroutine called when the HW button is pushed
+def button_callback(channel):
+	while 1:
+		GPIO.wait_for_edge(26, GPIO.RISING)
+		#print("turned on")
+		p1 =Process(target=write_to_lcd, args(r, ) 
+		p1.start()
+		GPIO.wait_for_edge(26, GPIO.FALLING)
+		#print("turned off")
+		p1.terminate()
+		lcd.clear()
+
+def write_to_lcd(r,tc,tf,yesorno):
+	lcd.clear()
+	lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+	#print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+
+
 
 # Raspberry Pi pin configuration:
 lcd_rs        = 25  # Note this might need to be changed to 21 for older revision Pi's.
@@ -60,24 +81,6 @@ GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 p1 = Process(target=button_callback(26))
 p1.start()
 
-#The subroutine called when the HW button is pushed
-def button_callback(channel):
-	while 1:
-		GPIO.wait_for_edge(26, GPIO.RISING)
-		#print("turned on")
-		p1 =Process(target=write_to_lcd) 
-		p1.start()
-		GPIO.wait_for_edge(26, GPIO.FALLING)
-		#print("turned off")
-		p1.terminate()
-		lcd.clear()
-
-		
-def write_to_lcd(r,tc,tf,yesorno):
-	lcd.clear()
-	lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
-	#print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
-
 r=0
 while True:
 
@@ -96,7 +99,7 @@ while True:
 		(discard, sep, reading)=data.partition(" t=")
 		tc = float(reading)/1000.0
 		tf = tc*9.0/5.0 + 32.0
-		p2 = Process(target = write_to_lcd, args = (r,tc,tf,yesorno))
+		#p2 = Process(target = write_to_lcd, args = (r,tc,tf,yesorno))
 		#Put any SQL command here - In our case, put sensor data in database
 		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
 
