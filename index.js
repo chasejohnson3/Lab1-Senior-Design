@@ -6,6 +6,9 @@ var mysql = require('mysql');
 var app = express();
 const url = require('url');
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 5000
 
 var con = mysql.createConnection({
@@ -26,6 +29,11 @@ con.connect(function(err){
     console.log("Connected");
 });
 
+var timeArr3 =[], tempArr3 = [];
+app.post('/postarrays', function(req,res){
+  timeArr3 = req.body.timeArras;
+  tempArr3 = req.body.tempArras;
+});
 app.get('/', function(req, resp){
     con.query(sql, function(err, result, fields){
         if (err) throw err;
@@ -35,12 +43,23 @@ app.get('/', function(req, resp){
             tempArr[i] = result[i].Temp;
             timeArr[i] = result[i].Time;
         }
+        console.log(timeArr3);
         resp.render(__dirname + "/index.ejs", {
             tempArr: tempArr,
-            timeArr: timeArr
+            timeArr: timeArr,
+            timeArr3: timeArr3,
+            tempArr3: tempArr3
         });
-    });
-})
+        
+      });
+      
+});
+
+
+app.post('/postarrays', function(req,res){
+  timeArr3 = req.body.timeArras;
+  tempArr3 = req.body.tempArras;
+});
 
  app.get('/display', function(req, resp){
     con.query(displayStatusTablePath, function(err1, rows, fields){
@@ -69,7 +88,7 @@ app.get('/sendTemps', function(req, resp){
 		}
         timeArr2[i] = result[i].Time;
     }
-	//console.log(tempArr2[tempArr2.length-1]);
+  //console.log(tempArr2[tempArr2.length-1]);
     resp.send([tempArr2, timeArr2]);
     });
     
@@ -97,7 +116,7 @@ app.get('/sendText', function(req, resp){
 
 	
     var mailOptions = {
-      from: 'buckystuck11@yahoo.com',
+      from: 'BuckyStucko11@gmail.com',
     //   to: phone_num + @email.uscc.net
     //   to: phone_num + "@messaging.sprintpcs.com",
       //to: phone_num + carrier_ext,

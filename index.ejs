@@ -42,18 +42,19 @@
 
   <h2 class="timeArr" style="visibility: hidden;height:0px"><%= timeArr%></h2>
 
+  <h1 class="tempArr3" style="visibility: hidden;height:0px"><%= tempArr3%></h1>
+
+  <h2 class="timeArr3" style="visibility: hidden;height:0px"><%= timeArr3%></h2>
+
   <div id="tester" style="width:800px;height:350px;"></div>
   <!-- <h1 id="test">aldsfk</h1> -->
   <script>
   // Set limits on axes
-  
-    var url = new URL(window.location.href);
+    
+	  var timeArr = [], tempArr = []; // Global arrays for continuous graph
 
     var tempArrStr = document.querySelector(".tempArr").textContent;
     var timeArrStr = document.querySelector(".timeArr").textContent;
-
-    console.log("Temp arr str is " + tempArrStr);
-    console.log("Time arr str is " + timeArrStr);
 	
     var tempArr = tempArrStr.split(',').map(function(item){
       return parseInt(item, 10);
@@ -74,24 +75,18 @@
   	  degCorDegF = !degCorDegF;
   }
 
-	var counter = 0;
+
 	var lengthTimeArr = 0; // Glob var for cheking whether timeArr has changed, (when Pi is off)
 	var time = 0; // Global variable for continuously couting time
-	var timeArr = [], tempArr = []; // Global arrays for continuous graph
-	var message = '';
+  var message = '';
+  var count = 0;
+
 	setInterval(function(){
+    
 		$.get('/sendTemps', function(data, status){
 			var timeArr2 = data[1];
 			var tempArr2 = data[0];
-			timeArr.push(time); // INcrease time always for the graph
-			time++;
-			counter++;
-			<!-- if(counter ==4){ -->
-				<!-- counter = 0; -->
-				<!-- message = "3000"; -->
-			<!-- } -->
-			
-			
+			timeArr.push(timeArr.length); // INcrease time always for the graph
 			if(lengthTimeArr == timeArr2.length){
         // PI is off
 				tempArr.push(null);
@@ -114,9 +109,8 @@
 				  }
 				}
 			}
-<!-- 			if(counter ==2){
-				lengthTimeArr = timeArr2.length;
-			//} -->			// Update the leght of time from the Database
+			
+			lengthTimeArr = timeArr2.length; // Update the leght of time from the Database
 			document.getElementById("insttemp").textContent = message;
 			
 			var layout = {
@@ -138,11 +132,6 @@
         line: {color: 'black'}
       }}] ,
 			layout, {showSendToCloud: true});
-
-			//console.log(timeArr2);
-			//console.log(tempArr2);
-			console.log(lengthTimeArr)
-			console.log(timeArr2.length)
 			
 		  //     //******** Print the instantaneous Temp below the Temp graph **********//
 		  //     if(tempArr[tempArr.length-1] == null){
@@ -163,7 +152,7 @@
 
 
 		    if(tempArr[tempArr.length-1] != null && (tempArr[tempArr.length-2] != tempArr[tempArr.length-1])){
-		      //sendText(tempArr);
+		      sendText(tempArr);
 		    }
   	});
 
@@ -176,7 +165,7 @@
 			disPwr = data[0];
 		});
 
-	}, 1000);	
+	}, 100);	
 	
 	
 </script>
@@ -249,64 +238,6 @@
   </FORM>
   
   <div id="tester2" style="width:600px;height:250px;"></div>
- <!--  <script>
-  var trace1 = {
-    x: [1, 2, 3, 4],
-    y: [10, 15, 13, 17],
-    type: 'scatter',
-  };
-  
-  var trace2 = {
-    x: [1, 2, 3, 4],
-    y: [16, 5, 11, 9],
-    type: 'scatter'
-  };
-  
-  var data = [trace1, trace2];
-  
-  Plotly.newPlot(tester2, data, {}, {showSendToCloud: true});
-  
-  var layout = {
-    xaxis: {
-      title: { text: 'Seconds Ago from Current Time (s)'},
-      range: [0, 300] 
-    }, 
-    yaxis:{
-      title: {text: "Temperature (degC)"},
-      range: [10, 50] }, 
-      title: { text: 'Temperature vs Time'}
-    };
 
-    var x2 = [1, 2, 3, 4, 5];
-    var y2 = [16, 5, 11, 9, 4];
-	setInterval(function(){ 
-    var number = x2[x2.length - 1]+1;
-    x2.push(number);
-    var randNum2 = Math.floor((Math.random() * 10) + 10);
-    if(randNum2 < 15){
-      randNum2 = null;
-    }
-    y2.push(randNum2);
-
-    var layout = {
-        xaxis: {
-          title: { text: 'Seconds Ago from Current Time (s)'},
-          range: [x2.length - 10, x2.length] 
-      }
-    };
-
-    var trace2 = {
-      x: x2,
-      y: y2,
-      type: 'scatter'
-    };
-
-    var data = [trace2];
-
-    Plotly.newPlot(tester2, data, layout, {showSendToCloud: true});
-
-   }, 1000);
-  </script> -->
-  
   </body>
   </html>
