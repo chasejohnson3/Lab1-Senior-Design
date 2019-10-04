@@ -107,11 +107,11 @@ app.get('/sendText', function(req, resp){
     var message = "";
     if (minMsg != null)
     {
-      message = minMsg;
+      message += minMsg;
     }
     if (maxMsg != null)
     {
-      message = maxMsg;
+      message += maxMsg;
     }
     
     var transporter = nodemailer.createTransport({
