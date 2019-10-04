@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Example using a character LCD connected to a Raspberry Pi or BeagleBone Black.
+# Import statements
 from multiprocessing import Process
 import RPi.GPIO as GPIO
 import time
@@ -9,29 +9,8 @@ import glob
 import time
 import MySQLdb
 import urllib2
+#Define thermostat bus
 DS18B20="/sys/bus/w1/devices/28-021316acc9aa/w1_slave"
-
-r=0,tc=0,tf=0,yesorno=0
-
-#The subroutine called when the HW button is pushed
-def button_callback(channel, r, tc, tf, yesorno):
-	global r,tc,tf,yesorno
-	while 1:
-		GPIO.wait_for_edge(26, GPIO.RISING)
-		#print("turned on")
-		p1 =Process(target=write_to_lcd, args =(r,tc,tf,yesorno)) 
-		p1.start()
-		GPIO.wait_for_edge(26, GPIO.FALLING)
-		#print("turned off")
-		p1.terminate()
-		lcd.clear()
-
-def write_to_lcd(r,tc,tf,yesorno):
-	lcd.clear()
-	lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
-	#print("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
-
-
 
 # Raspberry Pi pin configuration:
 lcd_rs        = 25  # Note this might need to be changed to 21 for older revision Pi's.
@@ -42,8 +21,6 @@ lcd_d6        = 18
 lcd_d7        = 22
 lcd_backlight = 4
 
-
-#initialize LCD
 # Define LCD column and row size for 16x2 LCD.
 lcd_columns = 16
 lcd_rows    = 2
@@ -52,6 +29,7 @@ lcd_rows    = 2
 lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7,
                            lcd_columns, lcd_rows, lcd_backlight)
 
+#Wait for wifi connection
 wifiConnected = 0
 while (wifiConnected == 0):
 	try:
@@ -72,22 +50,21 @@ db = MySQLdb.connect(host="34.68.18.19",
 #Set up a cursor object so you can accomplish your desired queries
 cur = db.cursor()
 
-#Clear the database upon Pi boot
+#Clear the database upon Pi boot - remove?
 cur.execute("truncate Lab1.TempData")
 db.commit()
 
-#Set up the HW pushbutton
+#Configure up the HW pushbutton
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-p3 = None
-count = 0
-while True:
-	
-	r += 1	
-	# If the sensor is not unplugged
 
-	if(os.path.isfile(DS18B20)):
+#Begin main body of code
+r =0
+while True:
+	r += 1	
+	if(os.path.isfile(DS18B20)): # If the sensor is not unplugged
+                #Take sample from temp sensor
 		f=open(DS18B20, "r")
 		data=f.read()
 		f.close()
@@ -100,33 +77,24 @@ while True:
 		tc = float(reading)/1000.0
 		tf = tc*9.0/5.0 + 32.0
 		
-		p2 = Process(target = write_to_lcd, args = (r,tc,tf,yesorno))
-		
-		#Put any SQL command here - In our case, put sensor data in database
+		#Store current temperature measurement in the database
 		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, tc, r))
-
 		db.commit()
-
-		#Pulls DisplayStatus bit from database
-		cur.execute("select * from Lab1.DisplayStatus")
-		resultSet = cur.fetchall()
-		for row in resultSet:
-			print row[0], row[1]
-		db.commit()
-		
-		#Define and start the HW button LCD print subroutine
-		if count==0:
-			count = 1
-			p3 = Process(target=button_callback, args=(26, r, tc, tf, yesorno))
-			p3.start()
-		
-		#Software Button logic row[1] = Lab1.DisplayStatus = 1 = display should be on.
-		if(row[1]):
-			#Start the software button call to the LCD print subroutine
-			p2.start()
-			p2.terminate()
-		else:
-			lcd.clear()
+            
+                #Fetch software display status from database
+                cur.execute("select * from Lab1.DisplayStatus")
+                resultSet = cur.fetchall()
+                for row in resultSet:
+                    swb= row[1]
+                
+                #Write to LCD
+		if GPIO.input(26) or swb: #or resultSet[1] :
+                    lcd.clear()
+                    lcd.message("{} {:.2f}C {:.2f}F Working = {}".format(r,tc,tf,yesorno))
+                else:
+                    lcd.clear()
+                    
+                
 	else:
 		cur.execute("INSERT INTO TempData (idTempData, Temp, Time) VALUES(%s, %s, %s)",(r, None, r))
 		db.commit()
