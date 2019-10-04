@@ -103,26 +103,37 @@ app.get('/sendText', function(req, resp){
     var maxMsg = req.query.maxMsg;
     console.log("Full Path: " + req.url);
     
+
+    var message = "";
+    if (minMsg != null)
+    {
+      message = minMsg;
+    }
+    if (maxMsg != null)
+    {
+      message = maxMsg;
+    }
     
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         //SOMEONE'S USERNAME AND PASSWORD REQUIRED HERE
-        user: '',
-        pass: '' 
+        user: 'BuckyStuck11@gmail.com',
+        pass: 'BuckyStuck440' 
       }
     });
 
 
 	
     var mailOptions = {
-      from: 'BuckyStucko11@gmail.com',
+      from: 'BuckyStuck11@gmail.com',
     //   to: phone_num + @email.uscc.net
     //   to: phone_num + "@messaging.sprintpcs.com",
       //to: phone_num + carrier_ext,
       to: phone_num + carrier_ext,
+      // to: "trashtrashy75@gmail.com",
       subject: 'Sending Email using Node.js',
-      text: minMsg + " " + maxMsg
+      text: message
     };
     
     transporter.sendMail(mailOptions, function(error, info){

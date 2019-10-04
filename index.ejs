@@ -110,7 +110,8 @@
 				}
 			}
 			
-			lengthTimeArr = timeArr2.length; // Update the leght of time from the Database
+      lengthTimeArr = timeArr2.length; // Update the leght of time from the Database
+      message = 50; // debugging
 			document.getElementById("insttemp").textContent = message;
 			
 			var layout = {
@@ -151,15 +152,16 @@
 		  //     }
 
 
-		    if(tempArr[tempArr.length-1] != null && (tempArr[tempArr.length-2] != tempArr[tempArr.length-1])){
-		      sendText(tempArr);
-		    }
+		    // if(tempArr[tempArr.length-1] != null && (tempArr[tempArr.length-2] != tempArr[tempArr.length-1])){
+		    //   sendText(tempArr);
+		    // }
   	});
 
 	}, 1000);
 	
 	//Call the logic at /display every second to get the latest 	
 	setInterval(function(){
+    // sendText()
 		var disPwr = 1;
 		$.get('/display', function(data, status){
 			disPwr = data[0];
@@ -172,21 +174,26 @@
 
 
 <script>
-    function sendText(tempArr) {
+    function sendText() {
+      console.log("Trying to send a text");
       var carrierExt = document.getElementById("carrierExt").value;
       var phoneNum = document.getElementById("phoneNum").value;
       var maxMsg = "";
-      if (tempArr[tempArr.length-1] > parseInt(document.getElementById("maxTemp").value)) {
+      console.log("Min temp: " + parseInt(document.getElementById("maxTemp").value));
+      console.log("Current temp: " + parseInt(document.getElementById("insttemp").textContent));
+      if (document.getElementById("insttemp").textContent > parseInt(document.getElementById("maxTemp").value)) {
         var maxMsg = document.getElementById("maxMessage").value;
+        url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt + "&maxMsg=" + maxMsg;
+        console.log(url);
+        $.get(url); // Uncommet this line after verifying. this sends the text request
       }
       var minMsg = "";
-      if (tempArr[tempArr.length-1] < parseInt(document.getElementById("minTemp").value)) {
+      if (document.getElementById("insttemp").textContent < parseInt(document.getElementById("minTemp").value)) {
         var minMsg = document.getElementById("minMessage").value;
-      }	   
-      url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt + "&minMsg=" + minMsg + "&maxMsg=" + maxMsg;
-      //url = "./sendText?email=" + phoneNum + "&minMsg=" + minMsg + "&maxMsg=" + maxMsg;
-      console.log(url);
-      $.get(url); // Uncommet this line after verifying. this sends the text request
+        url = "./sendText?phoneNum=" + phoneNum + "&carrierExt=" + carrierExt + "&minMsg=" + minMsg;
+        console.log(url);
+        $.get(url); // Uncommet this line after verifying. this sends the text request
+      }	        
     }
 </script>
 <script>
